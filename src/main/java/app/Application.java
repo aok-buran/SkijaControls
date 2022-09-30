@@ -13,6 +13,7 @@ public class Application implements Consumer<Event> {
      */
     private final Window window;
 
+
     /**
      * Конструктор окна приложения
      */
