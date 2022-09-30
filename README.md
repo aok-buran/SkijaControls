@@ -14,4 +14,5 @@
 
 `-encoding UTF-8 -charset UTF-8 -docencoding UTF-8`
 
-![](/imgs/i.png)
+![example](src/main/resources/example.png)
+
