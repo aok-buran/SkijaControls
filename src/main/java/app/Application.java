@@ -6,6 +6,7 @@ import io.github.humbleui.jwm.skija.EventFrameSkija;
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.Paint;
 import io.github.humbleui.skija.RRect;
+import controls.InputFactory;
 import io.github.humbleui.skija.Surface;
 import misc.CoordinateSystem2i;
 import misc.Misc;
@@ -24,6 +25,15 @@ import static app.Colors.PANEL_BACKGROUND_COLOR;
  * Класс окна приложения
  */
 public class Application implements Consumer<Event> {
+
+    /**
+     * радиус скругления элементов
+     */
+    public static final int C_RAD_IN_PX = 4;
+    /**
+     * отступы панелей
+     */
+    public static final int PANEL_PADDING = 5;
     /**
      * окно приложения
      */
@@ -46,13 +56,15 @@ public class Application implements Consumer<Event> {
     private final PanelLog panelLog;
 
     /**
-     * радиус скругления элементов
+     * флаг того, что окно развёрнуто на весь экран
      */
-    public static final int C_RAD_IN_PX = 4;
+    private boolean maximizedWindow;
+
     /**
-     * отступы панелей
+     * кнопка изменений: у мака - это `Command`, у windows - `Ctrl`
      */
-    public static final int PANEL_PADDING = 5;
+    public static final KeyModifier MODIFIER = Platform.CURRENT == Platform.MACOS ? KeyModifier.MAC_COMMAND : KeyModifier.CONTROL;
+
 
     /**
      * Конструктор окна приложения
@@ -137,11 +149,46 @@ public class Application implements Consumer<Event> {
             App.terminate();
         } else if (e instanceof EventWindowCloseRequest) {
             window.close();
+        } else if (e instanceof EventFrame) {
+            // запускаем рисование кадра
+            window.requestFrame();
         } else if (e instanceof EventFrameSkija ee) {
             // получаем поверхность рисования
             Surface s = ee.getSurface();
             // очищаем её канвас заданным цветом
             paint(s.getCanvas(), new CoordinateSystem2i(s.getWidth(), s.getHeight()));
+        }// кнопки клавиатуры
+        else if (e instanceof EventKey eventKey) {
+            // кнопка нажата с Ctrl
+            if (eventKey.isPressed()) {
+                if (eventKey.isModifierDown(MODIFIER))
+                    // разбираем, какую именно кнопку нажали
+                    switch (eventKey.getKey()) {
+                        case W -> window.close();
+                        case H -> window.minimize();
+                        case S -> PanelRendering.save();
+                        case O -> PanelRendering.load();
+                        case DIGIT1 -> {
+                            if (maximizedWindow)
+                                window.restore();
+                            else
+                                window.maximize();
+                            maximizedWindow = !maximizedWindow;
+                        }
+                        case DIGIT2 -> window.setOpacity(window.getOpacity() == 1f ? 0.5f : 1f);
+                    }
+                else
+                    switch (eventKey.getKey()) {
+                        case ESCAPE -> {
+                            window.close();
+                            // завершаем обработку, иначе уже разрушенный контекст
+                            // будет передан панелям
+                            return;
+
+                        }
+                        case TAB -> InputFactory.nextTab();
+                    }
+            }
         }
         panelControl.accept(e);
         panelRendering.accept(e);

@@ -2,6 +2,7 @@ package panels;
 
 import app.Point;
 import app.Task;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.humbleui.jwm.Event;
 import io.github.humbleui.jwm.EventMouseButton;
 import io.github.humbleui.jwm.Window;
@@ -10,6 +11,8 @@ import misc.CoordinateSystem2d;
 import misc.CoordinateSystem2i;
 import misc.Vector2d;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,7 +25,6 @@ public class PanelRendering extends GridPanel {
      * Представление проблемы
      */
     public static Task task;
-
     /**
      * Панель управления
      *
@@ -48,17 +50,50 @@ public class PanelRendering extends GridPanel {
                 new Vector2d(-10.0, -10.0), new Vector2d(10.0, 10.0)
         );
 
-        // создаём массив случайных точек
-        ArrayList<Point> points = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            // получаем случайное множество
-            Point.PointSet pointSet = ThreadLocalRandom.current().nextBoolean() ?
-                    Point.PointSet.FIRST_SET : Point.PointSet.SECOND_SET;
-            // добавляем точку в случайном месте ОСК в указанное множество
-            points.add(new Point(cs.getRandomCoords(), pointSet));
-        }
-        task = new Task(cs, points);
+        // создаём задачу без точек
+        task = new Task(cs, new ArrayList<>());
+        // добавляем в нё 10 случайных
+        task.addRandomPoints(10);
+    }
 
+    /**
+     * Сохранить файл
+     */
+    public static void save() {
+        String path = "src/main/resources/conf.json";
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(new File(path), task);
+            PanelLog.success("Файл " + path + " успешно сохранён");
+        } catch (IOException e) {
+            PanelLog.error("не получилось записать файл \n" + e);
+        }
+    }
+
+    /**
+     * Загружаем из файла
+     *
+     * @param path путь к файлу
+     */
+    public static void loadFromFile(String path) {
+        // создаём загрузчик JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // считываем систему координат
+            task = objectMapper.readValue(new File(path), Task.class);
+            PanelLog.success("Файл " + path + " успешно загружен");
+        } catch (IOException e) {
+            PanelLog.error("Не получилось прочитать файл " + path + "\n" + e);
+        }
+    }
+
+    /**
+     * Загрузить файл
+     */
+    public static void load() {
+        String path = "src/main/resources/conf.json";
+        PanelLog.info("load from " + path);
+        loadFromFile(path);
     }
 
     /**
@@ -79,11 +114,11 @@ public class PanelRendering extends GridPanel {
                 if (ee.isPressed())
                     // обрабатываем клик по задаче
                     task.click(lastWindowCS.getRelativePos(lastMove), ee.getButton());
-                // перерисовываем окно
-                window.requestFrame();
             }
         }
     }
+
+
 
     /**
      * Метод под рисование в конкретной реализации
