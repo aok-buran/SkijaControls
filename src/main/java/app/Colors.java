@@ -41,6 +41,42 @@ public class Colors {
 
 
     /**
+     * Цвет пересечения
+     */
+    public static final int CROSSED_COLOR = Misc.getColor(200, 0, 255, 255);
+    /**
+     * Цвет разности
+     */
+    public static final int SUBTRACTED_COLOR = Misc.getColor(200, 255, 255, 0);
+    /**
+     * Цвет сетки
+     */
+    public static final int TASK_GRID_COLOR = Misc.getColor(64, 255, 255, 255);
+    /**
+     * Цвет подложки
+     */
+    public static final int STATS_BACKGROUND_COLOR = Misc.getColor(64, 51, 200, 51);
+    /**
+     * Цвет подложки
+     */
+    public static final int STATS_COLOR = Misc.getColor(255, 51, 200, 51);
+    /**
+     * Цвет текста
+     */
+    public static final int STATS_TEXT_COLOR = Misc.getColor(255, 255, 255, 255);
+    /**
+     * Цвет текста
+     */
+    public static final int HELP_TEXT = Misc.getColor(255, 255, 255, 255);
+    /**
+     * Цвет фона
+     */
+    public static final int HELP_TEXT_BACKGROUND = Misc.getColor(50, 0, 0, 0);
+    /**
+     * Цвет заливки панели
+     */
+    public static final int DIALOG_BACKGROUND_COLOR = Misc.getColor(230, 70, 38, 83);
+    /**
      * Запрещённый конструктор
      */
     private Colors() {
