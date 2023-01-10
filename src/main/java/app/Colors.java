@@ -7,6 +7,14 @@ import misc.Misc;
  */
 public class Colors {
     /**
+     * Цвет заливки панели
+     */
+    public static final int SCROLLER_BACKGROUND_COLOR = Misc.getColor(150, 83, 38, 70);
+    /**
+     * Цвет заливки панели
+     */
+    public static final int SCROLLER_COLOR = Misc.getColor(255, 83, 38, 70);
+    /**
      * цвет фона
      */
     public static final int APP_BACKGROUND_COLOR = Misc.getColor(255, 38, 70, 83);

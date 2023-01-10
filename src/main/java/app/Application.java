@@ -2,6 +2,7 @@ package app;
 
 import controls.Label;
 import dialogs.PanelInfo;
+import dialogs.PanelSelectFile;
 import io.github.humbleui.jwm.*;
 import io.github.humbleui.jwm.skija.EventFrameSkija;
 import io.github.humbleui.skija.Canvas;
@@ -74,6 +75,10 @@ public class Application implements Consumer<Event> {
     private final PanelLog panelLog;
 
     /**
+     * Панель выбора файла
+     */
+    private final PanelSelectFile panelSelectFile;
+    /**
      * флаг того, что окно развёрнуто на весь экран
      */
     private boolean maximizedWindow;
@@ -121,6 +126,9 @@ public class Application implements Consumer<Event> {
         );
         // панель информации
         panelInfo = new PanelInfo(window, true, DIALOG_BACKGROUND_COLOR, PANEL_PADDING);
+
+        // Панель выбора файла
+        panelSelectFile = new PanelSelectFile(window, true, DIALOG_BACKGROUND_COLOR, PANEL_PADDING);
 
         // задаём обработчиком событий текущий объект
         window.setEventListener(this);
@@ -223,10 +231,9 @@ public class Application implements Consumer<Event> {
                     }
             }
         }
-
         switch (currentMode) {
             case INFO -> panelInfo.accept(e);
-            case FILE -> {}
+            case FILE -> panelSelectFile.accept(e);
             case WORK -> {
                 // передаём события на обработку панелям
                 panelControl.accept(e);
@@ -255,8 +262,7 @@ public class Application implements Consumer<Event> {
         // рисуем диалоги
         switch (currentMode) {
             case INFO -> panelInfo.paint(canvas, windowCS);
-            case FILE -> {
-            }
+            case FILE -> panelSelectFile.paint(canvas, windowCS);
         }
         canvas.restore();
     }
