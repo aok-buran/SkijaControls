@@ -89,8 +89,8 @@ public class PanelInfo extends Panel {
         if (e instanceof EventMouseMove ee) {
             accept.checkOver(lastWindowCS.getRelativePos(new Vector2i(ee)));
             // событие нажатия мыши
-        } else if (e instanceof EventMouseButton) {
-            if (!lastInside)
+        } else if (e instanceof EventMouseButton ee) {
+            if (!lastInside|| !ee.isPressed())
                 return;
 
             Vector2i relPos = lastWindowCS.getRelativePos(lastMove);

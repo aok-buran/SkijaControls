@@ -223,9 +223,6 @@ public class Application implements Consumer<Event> {
                     }
             }
         }
-        panelControl.accept(e);
-        panelRendering.accept(e);
-        panelLog.accept(e);
 
         switch (currentMode) {
             case INFO -> panelInfo.accept(e);
